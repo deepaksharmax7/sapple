@@ -11,33 +11,65 @@ from src.utils.schema_helper import fetch_schema
 
 
 def load_table_wname(table_name, conn):
-
-    # MySQL connection properties
-    host = conn.get('host')
-    port = conn.get('port')
-    database = conn.get('database')
-    user = conn.get('user')
-    password = conn.get('password')     
+    """ function to load a table 
+    :table_name string eg. "items"
+    : conn dict containing keys 
+        : host
+        : port
+        : database
+        : user
+        : password
+        eg.,
+            conn = {
+                "host": "localhost",
+                "port": "3306",
+                "user": "user",
+                "password": "password",
+                "database": "testdb"
+            }
+    returns
+    : data pyspark Dataframe
+    """
 
     # MySQL JDBC URL
-    jdbc_url = f"jdbc:mysql://{host}:{port}/{database}"
+    jdbc_url = f"jdbc:mysql://{conn.get('host')}:{conn.get('port')}/{conn.get('database')}"
 
 
     # Read data from MySQL table into a DataFrame
-    data = spark.read \
+    df = spark.read \
         .format("jdbc") \
         .option("url", jdbc_url) \
         .option("dbtable", table_name) \
-        .option("user", user) \
-        .option("password", password) \
+        .option("user", conn.get('user')) \
+        .option("password", conn.get('password')) \
         .load()
 
     # Show the data
-    data.show()
+    df.show()
 
-    return data
+    return df
 
 def write_table(table_name, data, conn):
+    """ function to write dataframe to table
+    : table_name string
+    : data pyspark Dataframe to write
+    : conn dict containing keys 
+        : host
+        : port
+        : database
+        : user
+        : password
+        eg.,
+            conn = {
+                "host": "localhost",
+                "port": "3306",
+                "user": "user",
+                "password": "password",
+                "database": "testdb"
+            }
+    returns
+    : None
+    """
     schema = fetch_schema(table_name)
 
     # Configure MySQL connection properties
@@ -87,6 +119,7 @@ def main():
         )
 
     # Save the merged DataFrame back to the MySQL table
+    merged_df.show()
     write_table(table_name, merged_df, tgt_conn)
     print("Write complete")
 
