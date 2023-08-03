@@ -13,11 +13,11 @@ from src.utils.schema_helper import fetch_schema
 def load_table_wname(table_name, conn):
 
     # MySQL connection properties
-    host = conn.get('host')         #"localhost"
-    port = conn.get('port')         #"3306"
-    database = conn.get('database') #"vimster"
-    user = conn.get('user')         #"admin"
-    password = conn.get('password')     #"Sanchar@108"
+    host = conn.get('host')
+    port = conn.get('port')
+    database = conn.get('database')
+    user = conn.get('user')
+    password = conn.get('password')     
 
     # MySQL JDBC URL
     jdbc_url = f"jdbc:mysql://{host}:{port}/{database}"
